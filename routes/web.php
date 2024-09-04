@@ -42,6 +42,18 @@ Route::get('/callback', function(Request $request){
             "code" => $request->code,
         ]
     );
+    $request->session()->put($response->json());
+    return redirect('/authuser');
+    return $response->json();
+});
+
+
+Route::get("/authuser", function(Request $request){
+    $access_token = $request->session()->get("access_token");
+    $response = Http::withHeaders([
+        "Accept" => "application/json",
+        "Authorization" => "Bearer ".$access_token
+    ])->get("http://localhost:8000/api/user");
 
     return $response->json();
 });
